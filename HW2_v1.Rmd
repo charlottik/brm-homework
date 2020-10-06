@@ -155,4 +155,4 @@ my.pred
 anpassen an unsere Variablen die wir nehmen möchten
 
 
-Hi Charly
+
