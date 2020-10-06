@@ -1,0 +1,158 @@
+---
+title: "BRM Homework 2"
+output:
+  word_document: default
+  html_document: default
+  pdf_document: default
+---
+\newpage
+
+# Introduction 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include = FALSE}
+rm(list=ls())
+```
+
+```{r, include=FALSE}
+getwd()
+setwd("/Users/charlottekasper/Desktop/Business Research Methods/Homework 2")
+```
+
+```{r, include = FALSE}
+library(readxl)
+library(latexpdf)
+library(tinytex)
+library(tidyverse)
+library(ggplot2)
+library(stargazer)
+library(data.table)
+library(bookdown)
+library(readxl)
+library(dplyr)
+```
+
+## Introduction
+research question: Are Housing variables helpful to fill-in missing values in Total household gross income?
+
+
+## Variable Overview: 
+
+HY010  - Total gross income
+HH070 - Total housing cost
+
+
+```{r, include = FALSE}
+Data_h <- read_excel("/Users/charlottekasper/Desktop/Business Research Methods/Homework 2/Mappe1.xlsx", 
+    sheet = "h -household data")
+Data_d <- read_excel("/Users/charlottekasper/Desktop/Business Research Methods/Homework 2/Mappe1.xlsx", 
+    sheet = "d - household register")
+View(Data_h)
+names(Data_h)
+```
+
+```{r}
+summary(Data_h)
+```
+
+```{r}
+datatable_h <- data.table(Data_h)
+datatable_d <- data.table(Data_d)
+```
+
+
+## Dispose of observations where total gross income or total housing cost equals zero
+
+
+```{r}
+any(is.na(Data_h))
+```
+This functions gives us evidence about the question if we have zero values in the data (Problem: right now it searches in the whole table but we only want to check this for specific rows)
+
+```{r}
+na.omit(Data_h)
+```
+entfernt Reihen mit missing values. (Bezieht sich auf NA nicht auf 0...)
+
+```{r}
+mis2(, complete.cases(Data_h))
+```
+sollte eigentlich Spalten mit fehlenden Werten entfernen...
+
+```{r}
+select(iris, contains("0"))
+
+```
+150 Zeilen enthalten den Wert 0 
+
+https://rstudio.com/wp-content/uploads/2015/06/data-wrangling-german.pdf
+
+## create a datatable to work with 
+extract the weight variable DB090 and used it in the linear model fitting (you can see how to use weights in function lm() using its help information)
+
+## plotting Total household gross income
+
+```{r, fig.width= 5, fig.height=3}
+ggplot(data = Data_h, aes(x=HY010, y=HH070)) +
+  geom_line() + 
+  geom_point() +
+  labs(x="HY010", y="Total housing cost", subtitle="xxx") +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  scale_x_discrete(breaks = seq(1960,2014, by=10))
+
+```
+
+Gegen was wollen wir Total gross income plotten? was soll auf die zweite achse?
+
+```{r}
+qplot(data = datatable_h, x = HY010, geom = "histogram") + theme_bw()
+```
+funktioniert nicht wegen discrete variable?
+
+## weighting 
+extract the weight variable DB090 and used it in the linear model fitting (you can see how to use weights in function lm() using its help information);
+
+## Multiple Regression Ananlysis
+
+# creating the lm function
+```{r}
+lm.spend1 <- lm(Total gross Income (HY010) ~ location + salary + children + catalogs,data = dt.marketing)
+stargazer(lm.spend1, type = "text", no.space = TRUE)
+```
+anpassen!
+
+#second model with other variables and a comparison table
+```{r}
+lm.spend2 <- lm(amountspent ~ location + salary + children + catalogs + history,
+                data = dt.marketing)
+stargazer(lm.spend1, lm.spend2, type = "text", no.space = TRUE)
+```
+
+
+## Comparison of the different regression models
+
+
+## prediction model
+Are you able to predict the Total household gross income (HY010) using only the housing variables?
+
+
+```{r}
+Total Gross income  <- data.table(HH012 = "Male",
+                         location = "Close",
+                         salary = 53700,
+                         children = 1,
+                         catalogs = 12)
+```
+anpassen an unsere Variablen die wir nehmen möchten
+
+```{r}
+my.pred <- predict(lm.spend1, newdata = new.client, level = .95, interval = "confidence")
+my.pred
+```
+anpassen an unsere Variablen die wir nehmen möchten
+
+
+
