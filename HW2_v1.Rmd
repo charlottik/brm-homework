@@ -103,13 +103,21 @@ names(Data_h)
 
 
 ```{r}
-sheet <- read.xlsx(
+sheetH <- read.xlsx(
   "Mappe1.xlsx",
   sheet = "h -household data",
   )
 
+sheetD <- read.xlsx(
+  "Mappe1.xlsx",
+  sheet = "d - household register",
+  )
+
 # Override sheet to filter the columns needed. sheet[rows (leave blank for all), c(columns to filter, separated by comma)]
-sheet = sheet[, c(1,4,5,7)]
+sheetH = sheetH[, c(1,4,5,7)]
+sheetD = sheetD[, c(2)]
+sheet = data.frame(sheetH, sheetD)
+
 View(sheet)
 ```
 
