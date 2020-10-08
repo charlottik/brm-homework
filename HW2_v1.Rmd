@@ -33,26 +33,88 @@ library(data.table)
 library(bookdown)
 library(readxl)
 library(dplyr)
+library(openxlsx)
+library(xlsx)
 ```
 
 ## Introduction
 research question: Are Housing variables helpful to fill-in missing values in Total household gross income?
 
+In the following, we will answer the research question whether or not housing variables are helpful to fill-in missing values in Total household gross income. 
+The data used to discover this question is public microdata for the European Survey on Income and Living Conditions (EU-SILC). 
+(missing: brief overview of things we will be covering in this analysis)
+
+
 
 ## Variable Overview: 
 
-HY010  - Total gross income
-HH070 - Total housing cost
+HB010 - Year of the survey
+HB020 - Country
+HB030 - Household ID # use to join data from h and d
+HB050 - Month of household interview # delete?
+HB060 - Year of household interview # delete?
+HB100 - Number of minutes to complete the household questionnaire # delete?
+
+HY010 - Total household gross income # only consider values > 0
+HY020 - Total disposable household income
+HY022 - # Long name and not important?
+HY023 - # Long name and not important?
+
+# Housing variables - only use selected ones
+
+HH010 - Dwelling type
+HH021 - Tenure status
+HH030 - Number of rooms
+HH031 - Year of contract or purchasing or installation
+HH040 - Leaking roof, damp wall/floors/foundation, or rot in window frames or floor
+HH050 - Ability to keep home adequately warm
+HH060 - Current rent related to occupied dwelling
+HH061 - Subjective rent
+HH070 - Total housing cost # only consider values > 0
+HH71 - Mortgage principal repayment
+HH081 - Bath or shower in dwelling
+HH091 - Indoor flushing toilet for sole use of household
+
+DB010 - Year of the survey
+DB020 - Country
+DB030 - Household ID # use to join data from h and d
+DB080 - Household design weight # does not appear in data table (from reading weighting explanation)
+DB090 - weight variable # use in the linear model fitting
+
+
+Variables below are from reading the weighting explanation:
+
+PB040 - Personal cross-sectional weight
+PB060 - Personal cross-sectional weight for selected respondent
+PB070 - Personal design weight for selected respondent
+
+RB050 - Personal cross-sectional weight
+
 
 
 ```{r, include = FALSE}
-Data_h <- read_excel("/Users/charlottekasper/Desktop/Business Research Methods/Homework 2/brm-homework/Mappe1.xlsx", 
+Data_h <- read_excel("Mappe1.xlsx", 
     sheet = "h -household data")
-Data_d <- read_excel("/Users/charlottekasper/Desktop/Business Research Methods/Homework 2/brm-homework/Mappe1.xlsx", 
+Data_d <- read_excel("Mappe1.xlsx", 
     sheet = "d - household register")
 View(Data_h)
 names(Data_h)
 ```
+
+
+```{r}
+sheet <- read.xlsx(
+  "Mappe1.xlsx",
+  sheet = "h -household data",
+  )
+
+# Override sheet to filter the columns needed. sheet[rows (leave blank for all), c(columns to filter, separated by comma)]
+sheet = sheet[, c(1,4,5,7)]
+View(sheet)
+```
+
+
+
 
 ```{r}
 summary(Data_h)
